@@ -23,8 +23,8 @@ func main() {
 	const defaultWidth = 20
 
 	m := components.PageView{Page: components.SELECTION}
-	
-	if err := tea.NewProgram(m, tea.WithAltScreen()).Start(); err != nil {
+
+	if err := tea.NewProgram(m, tea.WithAltScreen(), tea.WithANSICompressor()).Start(); err != nil {
 		fmt.Println("Error running program:", err)
 		os.Exit(1)
 	}

@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	term = termenv.EnvColorProfile()
+	term = termenv.TrueColor
 )
 
 type Provider struct {

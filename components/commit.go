@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
 	"me.kryptk.overcommit/utils"
 	"os"
@@ -52,12 +51,10 @@ func (i *CommitView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd) {
 func (i CommitView) View(v PageView) string {
 	var view string
 
-	box := lipgloss.NewStyle().Margin(1)
-
 	style := termenv.String().Bold().Foreground(ACCENT).Styled
 
 	view += fmt.Sprintf("%s : %s - %s\n", style("[Commit Type]"), v.selected.Keyword, v.selected.Description)
 	view += i.msgInput.View()
 
-	return box.Render(view)
+	return view
 }
