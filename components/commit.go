@@ -10,13 +10,13 @@ import (
 	"os"
 )
 
-var defaultInput = getInputView()
+var CommitViewInstance = NewCommitView()
 
 type CommitView struct {
 	msgInput textinput.Model
 }
 
-func getInputView() CommitView {
+func NewCommitView() CommitView {
 	ti := textinput.New()
 	ti.Prompt = fmt.Sprintf("%s : ", SetTextStyle("[Enter commit message]"))
 	ti.Placeholder = "pikachu"

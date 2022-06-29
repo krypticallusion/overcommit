@@ -34,7 +34,7 @@ func (p PageView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return keywords.Update(msg, p)
 	}
 
-	return defaultInput.Update(msg, p)
+	return CommitViewInstance.Update(msg, p)
 }
 
 func (p PageView) View() string {
@@ -43,5 +43,5 @@ func (p PageView) View() string {
 		return keywords.View()
 	}
 
-	return defaultInput.View(p)
+	return CommitViewInstance.View(p)
 }
