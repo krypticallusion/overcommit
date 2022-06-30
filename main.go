@@ -43,9 +43,9 @@ func main() {
 			_ = os.WriteFile(os.ExpandEnv(hook), []byte("overcommit $1 $2"), 0755)
 
 			fmt.Println(os.ExpandEnv("Successfully set up overcommit in $PWD!"))
-		}
 
-		return
+			return
+		}
 	}
 
 	m := components.PageView{Page: components.SELECTION}
