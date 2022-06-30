@@ -20,7 +20,33 @@ from : https://www.freecodecamp.org/news/writing-good-commit-messages-a-practica
 */
 
 func main() {
-	const defaultWidth = 20
+	hook := "$PWD/.git/hooks/prepare-commit-msg"
+
+	_, err := os.ReadDir(os.ExpandEnv("$PWD/.git"))
+	if err != nil {
+		fmt.Println("not a git repository")
+		return
+	}
+
+	if len(os.Args) <= 1 {
+		fmt.Println("Hi, set up using -i or --init")
+		return
+	}
+
+	if len(os.Args) > 1 {
+		// check if initing
+		isInit := os.Args[1] == "-i" || os.Args[1] == "--init"
+
+		if isInit {
+			//back up previous stuff
+			_ = os.Rename(os.ExpandEnv(fmt.Sprintf("%s.sample", hook)), os.ExpandEnv(fmt.Sprintf("%s.bak", hook)))
+			_ = os.WriteFile(os.ExpandEnv(hook), []byte("overcommit $1 $2"), 0755)
+
+			fmt.Println(os.ExpandEnv("Successfully set up overcommit in $PWD!"))
+		}
+
+		return
+	}
 
 	m := components.PageView{Page: components.SELECTION}
 
