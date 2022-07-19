@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"strings"
@@ -45,4 +46,23 @@ func AddToCommitMsg(text string, filename string) error {
 	}
 
 	return nil
+}
+
+func GetCommitMsgFromFile(fileName string) (string, error) {
+	// the first line of the file should be the commit msg
+
+	file, err := os.OpenFile(fileName, os.O_RDONLY, os.ModePerm)
+	if err != nil {
+		return "", err
+	}
+
+	reader := bufio.NewReader(file)
+
+	line, err := reader.ReadString('\n')
+	if err != nil {
+		return "", err
+	}
+
+	return line, nil
+
 }

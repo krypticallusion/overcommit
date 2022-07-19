@@ -120,7 +120,13 @@ func (l *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd) {
 
 			if len(os.Args) >= 3 {
 				fileName := os.Args[1]
-				_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.selected.Keyword, ""), fileName)
+
+				msg, err := utils.GetCommitMsgFromFile(fileName)
+				if err != nil {
+					return PageView{}, tea.Quit
+				}
+
+				_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.selected.Keyword, msg), fileName)
 
 				return PageView{}, tea.Quit
 			}
