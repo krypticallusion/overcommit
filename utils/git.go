@@ -3,11 +3,18 @@ package utils
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 func BuildPrefixWithMsg(prefix string, msg string) string {
+	if strings.Contains(msg, ":") {
+		region := strings.Trim(strings.Split(msg, ":")[0], " ")
+
+		prefix += fmt.Sprintf("(%s)", region)
+	}
+
 	delimiter := ":"
-	return fmt.Sprintf("%s %s %s", prefix, delimiter, msg)
+	return fmt.Sprintf("%s%s %s", prefix, delimiter, msg)
 }
 
 func AddToCommitMsg(text string, filename string) error {
