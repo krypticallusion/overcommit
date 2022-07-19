@@ -21,15 +21,28 @@ func BuildPrefixWithMsg(prefix string, msg string) string {
 }
 
 func AddToCommitMsg(text string, filename string) error {
-	body, err := os.ReadFile(filename)
-	if err != nil {
-		return err
-	}
-
 	file, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		return err
 	}
+
+	reader := bufio.NewReader(file)
+	firstLiner, err := reader.ReadSlice('\n')
+
+	// seek to next line
+	if _, err := file.Seek(int64(len(firstLiner)), 0); err != nil {
+		return err
+	}
+
+	body := make([]byte, 0)
+
+	if _, err := file.Read(body); err != nil {
+		return err
+	}
+
+	// Truncate the file
+	_ = file.Truncate(0)
+	_, _ = file.Seek(0, 0)
 
 	if _, err = file.WriteString(text); err != nil {
 		return err
