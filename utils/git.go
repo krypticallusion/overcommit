@@ -9,7 +9,9 @@ import (
 
 func BuildPrefixWithMsg(prefix string, msg string) string {
 	if strings.Contains(msg, ":") {
-		region := strings.Trim(strings.Split(msg, ":")[0], " ")
+		colonSplit := strings.Split(msg, ":")
+		region := strings.Trim(colonSplit[0], " ")
+		msg = colonSplit[1]
 
 		prefix += fmt.Sprintf("(%s)", region)
 	}
