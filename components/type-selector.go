@@ -116,6 +116,8 @@ func (tsv *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd)
 					}
 
 					v.Page = MSG
+
+					break
 				}
 			}
 		}
