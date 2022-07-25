@@ -37,7 +37,7 @@ func (i *CommitView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd) {
 			v.message = i.msgInput.Value()
 
 			fileName := os.Args[1]
-			_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.selected.Keyword, i.msgInput.Value()), fileName)
+			_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.selected.Prefix, i.msgInput.Value()), fileName)
 
 			return PageView{}, tea.Quit
 		}
@@ -53,7 +53,7 @@ func (i CommitView) View(v PageView) string {
 
 	style := termenv.String().Bold().Foreground(ACCENT).Styled
 
-	view += fmt.Sprintf("%s : %s - %s\n", style("[Commit Type]"), v.selected.Keyword, v.selected.Description)
+	view += fmt.Sprintf("%s : %s - %s\n", style("[Commit Type]"), v.selected.Prefix, v.selected.Description)
 	view += i.msgInput.View()
 
 	return view

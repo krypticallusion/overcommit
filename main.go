@@ -1,23 +1,17 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	tea "github.com/charmbracelet/bubbletea"
+	"log"
 	"me.kryptk.overcommit/components"
+	"me.kryptk.overcommit/utils"
 	"os"
 )
 
-/*
-feat: The new feature you're adding to a particular application
-fix: A bug fix
-style: Feature and updates related to styling
-refactor: Refactoring a specific section of the codebase
-test: Everything related to testing
-docs: Everything related to documentation
-chore: Regular code maintenance.
-
-from : https://www.freecodecamp.org/news/writing-good-commit-messages-a-practical-guide/
-*/
+//go:embed config.toml
+var config string
 
 func main() {
 	hook := "$PWD/.git/hooks/prepare-commit-msg"
@@ -48,7 +42,15 @@ func main() {
 		}
 	}
 
-	m := components.PageView{Page: components.SELECTION}
+	c, err := utils.GenerateConfig(config)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	selector := components.NewTypeSelector(c.Keys)
+	committer := components.NewCommitView()
+
+	m := components.PageView{Page: components.SELECTION, Selector: &selector, Committer: committer}
 
 	if err := tea.NewProgram(m, tea.WithAltScreen(), tea.WithANSICompressor()).Start(); err != nil {
 		fmt.Println("Error running program:", err)

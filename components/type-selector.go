@@ -15,48 +15,12 @@ var (
 	term = termenv.TrueColor
 )
 
-type Provider struct {
-	isSelected  bool
-	Description string
-	Keyword     string
-}
-
-func (p Provider) FilterValue() string {
-	return p.Keyword
-}
-
-var keywords = genList()
-
-var GLOBAL = []Provider{
-	{
-		Description: "introduce new features",
-		Keyword:     "feat",
-	},
-	{
-		Description: "fix a bug",
-		Keyword:     "fix",
-	}, {
-		Description: "updates and features related to styling",
-		Keyword:     "style",
-	}, {
-		Description: "refactor code",
-		Keyword:     "refactor",
-	}, {
-		Description: "add or update tests",
-		Keyword:     "test",
-	}, {
-		Description: "add or update documentation",
-		Keyword:     "docs",
-	}, {
-		Description: "regular maintenance",
-		Keyword:     "chore",
-	},
-}
-
-func genList() TypeSelectorView {
-	items := ProviderToItem(GLOBAL)
+func NewTypeSelector(keys []utils.Key) TypeSelectorView {
+	// just a type coercion
+	items := keysToItems(keys)
 
 	li := list.New(items, listDelegate{}, 40, 14)
+
 	li.SetShowTitle(true)
 	li.Styles.StatusBar = lipgloss.NewStyle().UnsetPaddingLeft().UnsetMarginLeft().MarginBottom(1)
 	li.Title = "What is the type of the commit?"
@@ -79,12 +43,12 @@ type listDelegate struct{}
 func (l listDelegate) Render(w io.Writer, m list.Model, index int, item list.Item) {
 	selected := index == m.Index()
 
-	i, ok := item.(Provider)
+	i, ok := item.(utils.Key)
 	if !ok {
 		return
 	}
 
-	txt := fmt.Sprintf("(%s) - %s [%d]", i.Keyword, i.Description, index+1)
+	txt := fmt.Sprintf("(%s) - %s [%d]", i.Prefix, i.Description, index+1)
 
 	if selected {
 		txt = termenv.String(txt).Foreground(term.Color("#8AA8F9")).Underline().String()
@@ -116,7 +80,7 @@ func (l *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd) {
 	case tea.KeyMsg:
 		switch keypress := msg.String(); keypress {
 		case "enter", tea.KeyRight.String():
-			v.selected = l.view.SelectedItem().(Provider)
+			v.selected = l.view.SelectedItem().(utils.Key)
 
 			if len(os.Args) >= 3 {
 				fileName := os.Args[1]
@@ -126,7 +90,7 @@ func (l *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd) {
 					return PageView{}, tea.Quit
 				}
 
-				_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.selected.Keyword, msg), fileName)
+				_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.selected.Prefix, msg), fileName)
 
 				return PageView{}, tea.Quit
 			}
@@ -140,10 +104,10 @@ func (l *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd) {
 	return v, cmd
 }
 
-func ProviderToItem(p []Provider) []list.Item {
-	items := make([]list.Item, len(p))
+func keysToItems(keys []utils.Key) []list.Item {
+	items := make([]list.Item, len(keys))
 
-	for i, k := range p {
+	for i, k := range keys {
 		items[i] = k
 	}
 

@@ -2,6 +2,7 @@ package components
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
+	"me.kryptk.overcommit/utils"
 )
 
 type Page int
@@ -12,9 +13,11 @@ const (
 )
 
 type PageView struct {
-	Page     Page
-	selected Provider
-	message  string
+	Page      Page
+	selected  utils.Key
+	message   string
+	Selector  *TypeSelectorView
+	Committer CommitView
 }
 
 func (p PageView) Init() tea.Cmd {
@@ -31,7 +34,7 @@ func (p PageView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	if p.Page == SELECTION {
-		return keywords.Update(msg, p)
+		return p.Selector.Update(msg, p)
 	}
 
 	return CommitViewInstance.Update(msg, p)
@@ -40,7 +43,11 @@ func (p PageView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (p PageView) View() string {
 	switch p.Page {
 	case SELECTION:
-		return keywords.View()
+		if p.Selector == nil {
+			return ""
+		}
+
+		return p.Selector.View()
 	}
 
 	return CommitViewInstance.View(p)

@@ -1,0 +1,38 @@
+#feat: The new feature you're adding to a particular application
+#fix: A bug fix
+#style: Feature and updates related to styling
+#refactor: Refactoring a specific section of the codebase
+#test: Everything related to testing
+#docs: Everything related to documentation
+#chore: Regular code maintenance.
+#from : https://www.freecodecamp.org/news/writing-good-commit-messages-a-practical-guide/
+
+
+# Feel free to change as per your liking.
+[[keys]]
+prefix = "feat"
+description = "introduce new features"
+
+[[keys]]
+prefix = "fix"
+description = "fix a bug"
+
+[[keys]]
+prefix = "style"
+description = "updates and features related to styling"
+
+[[keys]]
+prefix = "refactor"
+description = "refactor code"
+
+[[keys]]
+prefix = "test"
+description = "add or update test"
+
+[[keys]]
+prefix = "docs"
+description = "add or update documentation"
+
+[[keys]]
+prefix = "chore"
+description = "regular maintenance"
