@@ -7,12 +7,22 @@ import (
 	"strings"
 )
 
-func BuildPrefixWithMsg(prefix string, msg string) string {
-	if strings.Contains(msg, ":") {
-		colonSplit := strings.Split(msg, ":")
-		region := strings.Trim(colonSplit[0], " ")
-		msg = colonSplit[1]
+func extractRegionAndMsg(str string) (string, string) {
+	if strings.Contains(str, ":") {
+		colonSplit := strings.Split(str, ":")
+		region := strings.TrimSpace(colonSplit[0])
+		msg := strings.TrimSpace(colonSplit[1])
 
+		return region, msg
+	}
+
+	return "", str
+}
+
+func BuildPrefixWithMsg(prefix string, msg string) string {
+	region, msg := extractRegionAndMsg(msg)
+
+	if region != "" {
 		prefix += fmt.Sprintf("(%s)", region)
 	}
 
