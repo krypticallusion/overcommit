@@ -65,7 +65,7 @@ func (l listDelegate) Spacing() int {
 	return 0
 }
 
-func (l listDelegate) Update(msg tea.Msg, m *list.Model) tea.Cmd {
+func (l listDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd {
 	return nil
 }
 
