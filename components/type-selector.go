@@ -48,7 +48,7 @@ func (l listDelegate) Render(w io.Writer, m list.Model, index int, item list.Ite
 		return
 	}
 
-	txt := fmt.Sprintf("(%s) - %s [%d]", i.Prefix, i.Description, index+1)
+	txt := fmt.Sprintf("(%s) - %s [%d]", i.Prefix, i.Description, index)
 
 	if selected {
 		txt = termenv.String(txt).Foreground(term.Color("#8AA8F9")).Underline().String()
@@ -69,18 +69,18 @@ func (l listDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd {
 	return nil
 }
 
-func (l TypeSelectorView) View() string {
-	return l.view.View()
+func (tsv TypeSelectorView) View() string {
+	return tsv.view.View()
 }
 
-func (l *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd) {
+func (tsv *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd) {
 	var cmd tea.Cmd
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch keypress := msg.String(); keypress {
 		case "enter", tea.KeyRight.String():
-			v.selected = l.view.SelectedItem().(utils.Key)
+			v.selected = tsv.view.SelectedItem().(utils.Key)
 
 			if len(os.Args) >= 3 {
 				fileName := os.Args[1]
@@ -96,10 +96,32 @@ func (l *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd) {
 			}
 
 			v.Page = MSG
+		default:
+			// I have no idea if this is the wackiest way or if this is the best way, you tell me.
+			for i, item := range tsv.view.Items() {
+				if keypress == fmt.Sprintf("%d", i) {
+					v.selected = item.(utils.Key)
+
+					if len(os.Args) >= 3 {
+						fileName := os.Args[1]
+
+						msg, err := utils.GetCommitMsgFromFile(fileName)
+						if err != nil {
+							return PageView{}, tea.Quit
+						}
+
+						_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.selected.Prefix, msg), fileName)
+
+						return PageView{}, tea.Quit
+					}
+
+					v.Page = MSG
+				}
+			}
 		}
 	}
 
-	l.view, cmd = l.view.Update(msg)
+	tsv.view, cmd = tsv.view.Update(msg)
 
 	return v, cmd
 }
