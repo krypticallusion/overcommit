@@ -37,7 +37,7 @@ func (i *CommitView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd) {
 			v.message = i.msgInput.Value()
 
 			fileName := os.Args[1]
-			_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.selected.Prefix, i.msgInput.Value()), fileName)
+			_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.Template, v.selected.Prefix, i.msgInput.Value()), fileName)
 
 			return PageView{}, tea.Quit
 		}

@@ -16,6 +16,7 @@ type PageView struct {
 	Page      Page
 	selected  utils.Key
 	message   string
+	Template  utils.Template
 	Selector  *TypeSelectorView
 	Committer CommitView
 }

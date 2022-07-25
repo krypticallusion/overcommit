@@ -2,7 +2,6 @@ package utils
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strings"
 )
@@ -19,15 +18,14 @@ func extractRegionAndMsg(str string) (string, string) {
 	return "", str
 }
 
-func BuildPrefixWithMsg(prefix string, msg string) string {
+func BuildPrefixWithMsg(template Template, prefix string, msg string) string {
 	region, msg := extractRegionAndMsg(msg)
 
 	if region != "" {
-		prefix += fmt.Sprintf("(%s)", region)
+		return ExpandTemplate(template.Region, prefix, region, msg)
 	}
 
-	delimiter := ":"
-	return fmt.Sprintf("%s%s %s", prefix, delimiter, msg)
+	return ExpandTemplate(template.Normal, prefix, region, msg)
 }
 
 func AddToCommitMsg(text string, filename string) error {

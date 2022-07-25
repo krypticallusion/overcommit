@@ -5,7 +5,13 @@ import (
 )
 
 type Config struct {
-	Keys []Key `json:"keys" toml:"keys"`
+	Template Template
+	Keys     []Key `json:"keys" toml:"keys"`
+}
+
+type Template struct {
+	Region string `json:"region" toml:"region"`
+	Normal string `json:"normal" toml:"normal"`
 }
 
 // Key layout format

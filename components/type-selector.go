@@ -93,7 +93,7 @@ func (tsv *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd)
 					return PageView{}, tea.Quit
 				}
 
-				_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.selected.Prefix, msg), fileName)
+				_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.Template, v.selected.Prefix, msg), fileName)
 
 				return PageView{}, tea.Quit
 			}
@@ -113,7 +113,7 @@ func (tsv *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd)
 							return PageView{}, tea.Quit
 						}
 
-						_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.selected.Prefix, msg), fileName)
+						_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.Template, v.selected.Prefix, msg), fileName)
 
 						return PageView{}, tea.Quit
 					}

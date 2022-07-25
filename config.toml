@@ -36,3 +36,11 @@ description = "add or update documentation"
 [[keys]]
 prefix = "chore"
 description = "regular maintenance"
+
+# Messaging template
+# Messages are broken down into 3 parts, prefix (%p), region (%r), message (%m)
+# Two types of templates are needed, one with region and one without. Tell me know if a better way exist.
+# No foolproofing has been done, yet. Might come across undefined behaviour.
+[template]
+region = "%p(%r): %m"
+normal = "%p: %m"
