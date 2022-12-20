@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
@@ -101,27 +102,24 @@ func (tsv *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd)
 
 			v.Page = MSG
 		default:
-			// I have no idea if this is the wackiest way or if this is the best way, you tell me.
-			for i, item := range tsv.view.Items() {
-				if keypress == fmt.Sprintf("%d", i) {
-					v.selected = item.(utils.Key)
+			index, err := strconv.Atoi(keypress) 
+			if err != nil {
+				break
+			}
+			
+			if index < len(tsv.view.Items()) {
+				// Only fresh commits have 3 args, resets, rebases don't
+				if len(os.Args) >= 3 {
+					fileName := os.Args[1]
 
-					if len(os.Args) >= 3 {
-						fileName := os.Args[1]
-
-						msg, err := utils.GetCommitMsgFromFile(fileName)
-						if err != nil {
-							return PageView{}, tea.Quit
-						}
-
-						_ = utils.ReplaceHeaderFromCommit(utils.BuildPrefixWithMsg(v.Template, v.selected.Prefix, msg), fileName)
-
+					msg, err := utils.GetCommitMsgFromFile(fileName)
+					if err != nil {
 						return PageView{}, tea.Quit
 					}
 
-					v.Page = MSG
+					_ = utils.ReplaceHeaderFromCommit(utils.BuildPrefixWithMsg(v.Template, v.selected.Prefix, msg), fileName)
 
-					break
+					return PageView{}, tea.Quit
 				}
 			}
 		}
