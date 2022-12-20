@@ -50,7 +50,7 @@ func (l listDelegate) Render(w io.Writer, m list.Model, index int, item list.Ite
 		return
 	}
 
-	txt := fmt.Sprintf("(%s) - %s [%d]", i.Prefix, i.Description, index)
+	txt := fmt.Sprintf("(%s) - %s [%d]", i.Prefix, i.Description, index+1)
 
 	if selected {
 		txt = termenv.String(txt).Foreground(term.Color("#8AA8F9")).Underline().String()
@@ -107,7 +107,9 @@ func (tsv *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd)
 				break
 			}
 			
-			if index < len(tsv.view.Items()) {
+			// since indexes are starting from 1
+			// a list of 5 elements will have 1,2,3,4,5 as their index
+			if index <= len(tsv.view.Items()) {
 				// Only fresh commits have 3 args, resets, rebases don't
 				if len(os.Args) >= 3 {
 					fileName := os.Args[1]
