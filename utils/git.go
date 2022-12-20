@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -79,13 +80,13 @@ func GetCommitMsgFromFile(fileName string) (string, error) {
 		return "", err
 	}
 
-	reader := bufio.NewReader(file)
-
-	line, err := reader.ReadString('\n')
-	if err != nil {
-		return "", err
+	if scanner := bufio.NewScanner(file); scanner.Scan() {
+		line := scanner.Text()
+		
+		return line, nil
 	}
 
-	return line, nil
+
+	return "", fmt.Errorf("invalid")
 
 }
