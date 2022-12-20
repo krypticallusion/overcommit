@@ -2,13 +2,14 @@ package components
 
 import (
 	"fmt"
+	"io"
+	"os"
+
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
-	"io"
 	"me.kryptk.overcommit/utils"
-	"os"
 )
 
 var (
@@ -93,7 +94,7 @@ func (tsv *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd)
 					return PageView{}, tea.Quit
 				}
 
-				_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.Template, v.selected.Prefix, msg), fileName)
+				_ = utils.ReplaceHeaderFromCommit(utils.BuildPrefixWithMsg(v.Template, v.selected.Prefix, msg), fileName)
 
 				return PageView{}, tea.Quit
 			}
@@ -113,7 +114,7 @@ func (tsv *TypeSelectorView) Update(msg tea.Msg, v PageView) (PageView, tea.Cmd)
 							return PageView{}, tea.Quit
 						}
 
-						_ = utils.AddToCommitMsg(utils.BuildPrefixWithMsg(v.Template, v.selected.Prefix, msg), fileName)
+						_ = utils.ReplaceHeaderFromCommit(utils.BuildPrefixWithMsg(v.Template, v.selected.Prefix, msg), fileName)
 
 						return PageView{}, tea.Quit
 					}

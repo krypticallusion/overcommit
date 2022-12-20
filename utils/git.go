@@ -3,6 +3,7 @@ package utils
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 )
@@ -19,6 +20,10 @@ func extractRegionAndMsg(str string) (string, string) {
 	return "", str
 }
 
+func init() {
+	ReplaceHeaderFromCommit("Dumbledore", "hallo.txt")
+}
+
 func BuildPrefixWithMsg(template Template, prefix string, msg string) string {
 	region, msg := extractRegionAndMsg(msg)
 
@@ -29,45 +34,28 @@ func BuildPrefixWithMsg(template Template, prefix string, msg string) string {
 	return ExpandTemplate(template.Normal, prefix, region, msg)
 }
 
-func AddToCommitMsg(text string, filename string) error {
+func ReplaceHeaderFromCommit(text string, filename string) error {
 	file, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		return err
 	}
 
-	reader := bufio.NewReader(file)
-	firstLiner, err := reader.ReadSlice('\n')
+	defer file.Close()
+	defer file.Sync()
 
-	// seek to next line
-	if _, err := file.Seek(int64(len(firstLiner)), 0); err != nil {
+	body , err := io.ReadAll(file)
+	if err != nil {
 		return err
 	}
 
-	body := make([]byte, 0)
+	// split by end of line
+	splitByEOL := strings.Split(string(body), "\n")
 
-	if _, err := file.Read(body); err != nil {
-		return err
-	}
+	// replace the first line with text
+	splitByEOL[0] = text
 
-	// Truncate the file
-	_ = file.Truncate(0)
-	_, _ = file.Seek(0, 0)
-
-	if _, err = file.WriteString(text); err != nil {
-		return err
-	}
-
-	if _, err = file.Write(body); err != nil {
-		return err
-	}
-
-	if err = file.Sync(); err != nil {
-		return err
-	}
-
-	if err = file.Close(); err != nil {
-		return err
-	}
+	file.Truncate(0)
+	file.Write([]byte(strings.Join(splitByEOL, "\n")))
 
 	return nil
 }
