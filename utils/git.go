@@ -55,7 +55,7 @@ func ReplaceHeaderFromCommit(text string, filename string) error {
 	splitByEOL[0] = text
 
 	file.Truncate(0)
-	file.Write([]byte(strings.Join(splitByEOL, "\n")))
+	file.WriteAt([]byte(strings.Join(splitByEOL, "\n")), 0)
 
 	return nil
 }
